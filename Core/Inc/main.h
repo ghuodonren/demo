@@ -65,6 +65,14 @@ void Error_Handler(void);
 #define RL_GPIO_Port GPIOE
 #define RR_Pin GPIO_PIN_5
 #define RR_GPIO_Port GPIOE
+#define LCD_RST_Pin GPIO_PIN_2
+#define LCD_RST_GPIO_Port GPIOC
+#define LCD_PWR_Pin GPIO_PIN_12
+#define LCD_PWR_GPIO_Port GPIOD
+#define SLCD_DC_Pin GPIO_PIN_13
+#define SLCD_DC_GPIO_Port GPIOD
+#define LCD_CS_Pin GPIO_PIN_15
+#define LCD_CS_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
 
