@@ -27,7 +27,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "atk_md0240.h"
+#include "atk_md0240_font.h"
+#include "atk_md0240_spi.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -102,7 +104,8 @@ int main(void)
   MX_USART3_UART_Init();
   MX_SPI3_Init();
   /* USER CODE BEGIN 2 */
-
+  atk_md0240_init();
+  atk_md0240_show_string(10, 10, "Hello World!", ATK_MD0240_LCD_FONT_24, ATK_MD0240_RED);
   /* USER CODE END 2 */
 
   /* Infinite loop */
