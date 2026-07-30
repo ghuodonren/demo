@@ -109,6 +109,7 @@ int main(void)
   MX_SPI3_Init();
   MX_TIM8_Init();
   /* USER CODE BEGIN 2 */
+  Motor_Init();
   atk_md0240_init();
   atk_md0240_clear(ATK_MD0240_WHITE);
   atk_md0240_show_string(10, 10, "JY901P Gyro Test", ATK_MD0240_LCD_FONT_24, ATK_MD0240_RED);
@@ -130,7 +131,9 @@ int main(void)
   float current_wz = 0.0f;
   float display_yaw = 0.0f;
 
-  Motor_Init();
+  uint32_t motor_last_tick = HAL_GetTick();    // 记录开机时间戳
+  Motor_Dir_t current_motor_dir = DIR_FORWARD; // 初始方向
+  Motor_Test_All(current_motor_dir);      // 开启电机初始正转状态
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -164,13 +167,23 @@ int main(void)
         strcpy(last_wz_str, cur_wz_str);
     }
 
+    if (HAL_GetTick() - motor_last_tick >= 2000) 
+    {
+      // 超过 2 秒了，反转方向状态
+      if (current_motor_dir == DIR_FORWARD) {
+          current_motor_dir = DIR_REVERSE;
+      } else {
+          current_motor_dir = DIR_FORWARD;
+      }
+
+      // 将新的方向下发给所有电机引脚
+      Motor_Test_All(current_motor_dir);
+
+      // 【关键】更新时间戳，重新开始新一轮的 2 秒倒计时
+      motor_last_tick = HAL_GetTick(); 
+    }
+
     HAL_Delay(30);
-
-    Motor_Test_All(DIR_FORWARD);
-    HAL_Delay(2000);
-
-    Motor_Test_All(DIR_REVERSE);
-    HAL_Delay(2000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
