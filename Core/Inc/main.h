@@ -67,6 +67,8 @@ void Error_Handler(void);
 #define RR_GPIO_Port GPIOE
 #define RST_Pin GPIO_PIN_2
 #define RST_GPIO_Port GPIOC
+#define IIC_PULLUP_VCC_Pin GPIO_PIN_13
+#define IIC_PULLUP_VCC_GPIO_Port GPIOB
 #define PWR_Pin GPIO_PIN_12
 #define PWR_GPIO_Port GPIOD
 #define WR_Pin GPIO_PIN_13
