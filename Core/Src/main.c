@@ -31,6 +31,7 @@
 #include "atk_md0240_font.h"
 #include "atk_md0240_spi.h"
 #include "gyroscope.h"
+#include "motor.h"
 #include <stdio.h>
 #include <string.h>
 /* USER CODE END Includes */
@@ -128,6 +129,8 @@ int main(void)
   float current_yaw = 0.0f;
   float current_wz = 0.0f;
   float display_yaw = 0.0f;
+
+  Motor_Init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -162,6 +165,12 @@ int main(void)
     }
 
     HAL_Delay(30);
+
+    Motor_Test_All(DIR_FORWARD);
+    HAL_Delay(2000);
+
+    Motor_Test_All(DIR_REVERSE);
+    HAL_Delay(2000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
