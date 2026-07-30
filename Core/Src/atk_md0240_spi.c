@@ -21,7 +21,7 @@
 #include "atk_md0240_spi.h"
 #include "spi.h"
 
-static SPI_HandleTypeDef hspi3;
+extern SPI_HandleTypeDef hspi3;
 
 /**
  * @brief       ATK-MD0240ģ��SPI�ӿڳ�ʼ��

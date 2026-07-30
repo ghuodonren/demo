@@ -30,6 +30,9 @@
 #include "atk_md0240.h"
 #include "atk_md0240_font.h"
 #include "atk_md0240_spi.h"
+#include "gyroscope.h"
+#include <stdio.h>
+#include <string.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -103,15 +106,62 @@ int main(void)
   MX_USART2_UART_Init();
   MX_USART3_UART_Init();
   MX_SPI3_Init();
+  MX_TIM8_Init();
   /* USER CODE BEGIN 2 */
   atk_md0240_init();
-  atk_md0240_show_string(10, 10, "Hello World!", ATK_MD0240_LCD_FONT_24, ATK_MD0240_RED);
+  atk_md0240_clear(ATK_MD0240_WHITE);
+  atk_md0240_show_string(10, 10, "JY901P Gyro Test", ATK_MD0240_LCD_FONT_24, ATK_MD0240_RED);
+
+  HAL_Delay(1000);
+  float yaw_offset = 0.0f;
+  for(int i = 0; i < 5; i++) 
+  {
+      yaw_offset = JY901P_Read_Yaw();
+      HAL_Delay(20);
+  }
+
+  char last_yaw_str[30] = "";
+  char last_wz_str[30] = "";
+  char cur_yaw_str[30] = "";
+  char cur_wz_str[30] = "";
+
+  float current_yaw = 0.0f;
+  float current_wz = 0.0f;
+  float display_yaw = 0.0f;
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    current_yaw = JY901P_Read_Yaw();
+    current_wz = JY901P_Read_WZ();
+    display_yaw = current_yaw - yaw_offset;
+
+    if (display_yaw > 180.0f) {
+        display_yaw -= 360.0f;
+    } else if (display_yaw < -180.0f) {
+        display_yaw += 360.0f;
+    }
+    sprintf(cur_yaw_str, "Yaw: %6.2f deg", display_yaw);
+    sprintf(cur_wz_str, "Wz : %6.2f d/s", current_wz);
+
+    if (strcmp(last_yaw_str, cur_yaw_str) != 0) 
+    {
+        atk_md0240_show_string(10, 50, last_yaw_str, ATK_MD0240_LCD_FONT_24, ATK_MD0240_WHITE);
+        atk_md0240_show_string(10, 50, cur_yaw_str, ATK_MD0240_LCD_FONT_24, ATK_MD0240_BLUE);
+        strcpy(last_yaw_str, cur_yaw_str);
+    }
+
+    // 【Wz 角速度刷新】
+    if (strcmp(last_wz_str, cur_wz_str) != 0) 
+    {
+        atk_md0240_show_string(10, 80, last_wz_str, ATK_MD0240_LCD_FONT_24, ATK_MD0240_WHITE);
+        atk_md0240_show_string(10, 80, cur_wz_str, ATK_MD0240_LCD_FONT_24, ATK_MD0240_BROWN);
+        strcpy(last_wz_str, cur_wz_str);
+    }
+
+    HAL_Delay(30);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
