@@ -49,6 +49,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/Src/atk_md0240_spi.c
     Core/Src/gyroscope.c
     Core/Src/motor.c
+    Core/Src/robot_servo.c
 )
 
 # Add include paths

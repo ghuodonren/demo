@@ -32,6 +32,7 @@
 #include "atk_md0240_spi.h"
 #include "gyroscope.h"
 #include "motor.h"
+#include "robot_servo.h"
 #include <stdio.h>
 #include <string.h>
 /* USER CODE END Includes */
@@ -134,6 +135,10 @@ int main(void)
   uint32_t motor_last_tick = HAL_GetTick();    // 记录开机时间戳
   Motor_Dir_t current_motor_dir = DIR_FORWARD; // 初始方向
   Motor_Test_All(current_motor_dir);      // 开启电机初始正转状态
+
+  uint32_t arm_last_tick = HAL_GetTick();
+  uint8_t arm_state = 0; 
+  Robot_Arm_Fold();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -181,6 +186,23 @@ int main(void)
 
       // 【关键】更新时间戳，重新开始新一轮的 2 秒倒计时
       motor_last_tick = HAL_GetTick(); 
+    }
+
+    if (HAL_GetTick() - arm_last_tick >= 4000) 
+    {
+      arm_last_tick = HAL_GetTick(); // 重新按秒表
+
+      arm_state++;
+      if (arm_state > 4) arm_state = 0; // 在 0~3 之间循环
+
+      switch (arm_state)
+      {
+          case 0: Robot_Arm_Fold();   break; // 折叠
+          case 1: Robot_Arm_Expand(); break; // 伸出
+          case 2: Robot_Arm_Grab();   break; // 抓取
+          case 3: Robot_Arm_Lift();   break; // 抬起
+          case 4: Robot_Arm_Vertical_Test(); break; // 垂直
+      }
     }
 
     HAL_Delay(30);
